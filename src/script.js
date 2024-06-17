@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import GUI from 'lil-gui'
 import earthVertexShader from './shaders/earth/vertex.glsl'
 import earthFragmentShader from './shaders/earth/fragment.glsl'
-
+import CustomShaderMaterial from 'three-custom-shader-material/vanilla'
 /**
  * Base
  */
@@ -19,20 +19,49 @@ const scene = new THREE.Scene()
 // Loaders
 const textureLoader = new THREE.TextureLoader()
 
+const uniforms = {
+    uTime: new  THREE.Uniform(0),
+
+}
+
+
 /**
  * Earth
  */
 // Mesh
-const earthGeometry = new THREE.SphereGeometry(2, 64, 64)
-const earthMaterial = new THREE.ShaderMaterial({
+const earthGeometry = new THREE.SphereGeometry(3, 1000, 1000)
+const earthMaterial = new CustomShaderMaterial({
+    // CSM
+    baseMaterial: THREE.MeshStandardMaterial,
+    silent: true,
     vertexShader: earthVertexShader,
     fragmentShader: earthFragmentShader,
-    uniforms:
-    {
-    }
+    uniforms,
+    // MeshStandardMaterial
+    metalness: 0,
+    roughness: 0.5,
+    color: '#85d534'
 })
+
 const earth = new THREE.Mesh(earthGeometry, earthMaterial)
 scene.add(earth)
+
+
+/**
+ * Lights
+ */
+const directionalLight = new THREE.DirectionalLight('#ffffff', 2)
+directionalLight.position.set(6.25, 3, 4)
+directionalLight.castShadow = true
+directionalLight.shadow.mapSize.set(1024, 1024)
+directionalLight.shadow.camera.near = 0.1
+directionalLight.shadow.camera.far = 30
+directionalLight.shadow.camera.top = 8
+directionalLight.shadow.camera.right = 8
+directionalLight.shadow.camera.bottom = -8
+directionalLight.shadow.camera.left = -8
+scene.add(directionalLight)
+
 
 /**
  * Sizes

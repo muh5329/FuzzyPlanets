@@ -1,18 +1,30 @@
-varying vec2 vUv;
-varying vec3 vNormal;
-varying vec3 vPosition;
 
-void main()
-{
-    // Position
-    vec4 modelPosition = modelMatrix * vec4(position, 1.0);
-    gl_Position = projectionMatrix * viewMatrix * modelPosition;
+uniform float uTime;
+#include ../../includes/simplexNoise2d.glsl
 
-    // Model normal
-    vec3 modelNormal = (modelMatrix * vec4(normal, 0.0)).xyz;
+float getElevation(vec2 position){
+    float elevation = 0.0;
+    elevation += simplexNoise2d(position);
+    return elevation;
+}
 
-    // Varyings
-    vUv = uv;
-    vNormal = modelNormal;
-    vPosition = modelPosition.xyz;
+void main(){
+
+
+    // Neighbours positions
+    float shift = 0.01;
+    vec3 positionA = position + vec3(shift, 0.0, 0.0);
+    vec3 positionB = position + vec3(0.0, 0.0, - shift);
+
+     // Elevation
+    float elevation = getElevation(csm_Position.xz);
+    csm_Position.y += elevation;
+    positionA.y += getElevation(positionA.xz);
+    positionB.y += getElevation(positionB.xz);;
+
+    // Compute normal
+    vec3 toA = normalize(positionA - csm_Position);
+    vec3 toB = normalize(positionB - csm_Position);
+    csm_Normal = cross(toA, toB);
+
 }
