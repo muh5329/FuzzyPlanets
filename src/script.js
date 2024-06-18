@@ -9,22 +9,16 @@ import CustomShaderMaterial from 'three-custom-shader-material/vanilla'
  */
 // Debug
 const gui = new GUI()
-
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
-
 // Scene
 const scene = new THREE.Scene()
-
 // Loaders
 const textureLoader = new THREE.TextureLoader()
-
 const uniforms = {
     uTime: new  THREE.Uniform(0),
 
 }
-
-
 /**
  * Earth
  */
@@ -122,7 +116,7 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-    earth.rotation.y = elapsedTime * 0.1
+    //earth.rotation.y = elapsedTime * 0.1
 
     // Update controls
     controls.update()
