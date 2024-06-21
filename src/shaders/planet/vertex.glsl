@@ -7,11 +7,7 @@ uniform float uStrength;
 
 
 float getHeightNoise(vec3 position){
-    float noise = simplexNoise4d(vec4(position,0.0));
-
-    noise *= .3;
-
-
+   
     float elevation = 0.0;
     elevation += simplexNoise4d(vec4(position ,0.0)) / 2.0 ;
     elevation += simplexNoise4d(vec4(position * 2.0,0.0)) / 4.0 ;
