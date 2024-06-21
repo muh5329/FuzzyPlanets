@@ -1,9 +1,10 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import GUI from 'lil-gui'
-import earthVertexShader from './shaders/earth/vertex.glsl'
-import earthFragmentShader from './shaders/earth/fragment.glsl'
+import planetVertexShader from './shaders/planet/vertex.glsl'
+import planetFragmentShader from './shaders/planet/fragment.glsl'
 import CustomShaderMaterial from 'three-custom-shader-material/vanilla'
+import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
 /**
  * Base
  */
@@ -17,19 +18,21 @@ const scene = new THREE.Scene()
 const textureLoader = new THREE.TextureLoader()
 const uniforms = {
     uTime: new  THREE.Uniform(0),
-
+    uStrength: new THREE.Uniform(2.0),
 }
 /**
- * Earth
+ * Planet
  */
 // Mesh
-const earthGeometry = new THREE.SphereGeometry(3, 1000, 1000)
-const earthMaterial = new CustomShaderMaterial({
+let planetGeometry = new THREE.IcosahedronGeometry(2.5, 50)
+planetGeometry = mergeVertices(planetGeometry)
+planetGeometry.computeTangents()
+const planetMaterial = new CustomShaderMaterial({
     // CSM
     baseMaterial: THREE.MeshStandardMaterial,
     silent: true,
-    vertexShader: earthVertexShader,
-    fragmentShader: earthFragmentShader,
+    vertexShader: planetVertexShader,
+    fragmentShader: planetFragmentShader,
     uniforms,
     // MeshStandardMaterial
     metalness: 0,
@@ -37,23 +40,30 @@ const earthMaterial = new CustomShaderMaterial({
     color: '#85d534'
 })
 
-const earth = new THREE.Mesh(earthGeometry, earthMaterial)
-scene.add(earth)
+const planetDepthMaterial = new CustomShaderMaterial({
+    // CSM
+    baseMaterial: THREE.MeshStandardMaterial,
+    silent: true,
+    vertexShader: planetVertexShader,
+    fragmentShader: planetFragmentShader,
+    // MeshDepthMaterial
+    depthPacking: THREE.RGBADepthPacking
+})
 
+const planet = new THREE.Mesh(planetGeometry, planetMaterial)
+planet.customDepthMaterial = planetDepthMaterial
+scene.add(planet)
+gui.add(uniforms.uStrength, 'value', 0, 10, 0.001).name('uStrength')
 
 /**
  * Lights
  */
-const directionalLight = new THREE.DirectionalLight('#ffffff', 2)
-directionalLight.position.set(6.25, 3, 4)
+const directionalLight = new THREE.DirectionalLight('#ffffff', 3)
 directionalLight.castShadow = true
 directionalLight.shadow.mapSize.set(1024, 1024)
-directionalLight.shadow.camera.near = 0.1
-directionalLight.shadow.camera.far = 30
-directionalLight.shadow.camera.top = 8
-directionalLight.shadow.camera.right = 8
-directionalLight.shadow.camera.bottom = -8
-directionalLight.shadow.camera.left = -8
+directionalLight.shadow.camera.far = 15
+directionalLight.shadow.normalBias = 0.05
+directionalLight.position.set(0.25, 2, - 2.25)
 scene.add(directionalLight)
 
 
