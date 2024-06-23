@@ -19,6 +19,10 @@ const textureLoader = new THREE.TextureLoader()
 const uniforms = {
     uTime: new  THREE.Uniform(0),
     uStrength: new THREE.Uniform(2.0),
+    uPositionFrequency: new THREE.Uniform(0.2),
+    uWarpFrequency: new THREE.Uniform(5),
+    uWarpStrength: new THREE.Uniform(0.5),
+    uNoiseMinValue: new THREE.Uniform(0.009),
 }
 /**
  * Planet
@@ -53,7 +57,11 @@ const planetDepthMaterial = new CustomShaderMaterial({
 const planet = new THREE.Mesh(planetGeometry, planetMaterial)
 planet.customDepthMaterial = planetDepthMaterial
 scene.add(planet)
+gui.add(uniforms.uPositionFrequency, 'value', 0, 1, 0.001).name('uPositionFrequency')
 gui.add(uniforms.uStrength, 'value', 0, 10, 0.001).name('uStrength')
+gui.add(uniforms.uWarpFrequency, 'value', 0, 10, 0.001).name('uWarpFrequency')
+gui.add(uniforms.uWarpStrength, 'value', 0, 1, 0.001).name('uWarpStrength')
+gui.add(uniforms.uNoiseMinValue, 'value', 0.00001, 1, 0.001).name('uNoiseMinValue')
 
 /**
  * Lights
