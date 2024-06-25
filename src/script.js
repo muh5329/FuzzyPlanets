@@ -22,7 +22,8 @@ const uniforms = {
     uPositionFrequency: new THREE.Uniform(0.2),
     uWarpFrequency: new THREE.Uniform(5),
     uWarpStrength: new THREE.Uniform(0.5),
-    uNoiseMinValue: new THREE.Uniform(0.009),
+    uNoiseMinValue: new THREE.Uniform(0.00001),
+    uOceans:new THREE.Uniform(true),
 }
 /**
  * Planet
@@ -59,9 +60,21 @@ planet.customDepthMaterial = planetDepthMaterial
 scene.add(planet)
 gui.add(uniforms.uPositionFrequency, 'value', 0, 1, 0.001).name('uPositionFrequency')
 gui.add(uniforms.uStrength, 'value', 0, 10, 0.001).name('uStrength')
+
+
 gui.add(uniforms.uWarpFrequency, 'value', 0, 10, 0.001).name('uWarpFrequency')
 gui.add(uniforms.uWarpStrength, 'value', 0, 1, 0.001).name('uWarpStrength')
-gui.add(uniforms.uNoiseMinValue, 'value', 0.00001, 1, 0.001).name('uNoiseMinValue')
+gui.add(uniforms.uNoiseMinValue, 'value', 0.0000001, 1, 0.000001).name('uNoiseMinValue')
+   
+
+
+var planetProperties = {
+	haveOcean: true,
+}
+
+gui.add( planetProperties, 'haveOcean' ).onChange( ()  => uniforms.uOceans = planetProperties.haveOcean ) 	// checkbox
+
+
 
 /**
  * Lights
@@ -130,7 +143,7 @@ renderer.setClearColor('#000011')
  */
 const clock = new THREE.Clock()
 
-const tick = () =>
+const render = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
@@ -143,7 +156,6 @@ const tick = () =>
     renderer.render(scene, camera)
 
     // Call tick again on the next frame
-    window.requestAnimationFrame(tick)
+    window.requestAnimationFrame(render)
 }
-
-tick()
+render()

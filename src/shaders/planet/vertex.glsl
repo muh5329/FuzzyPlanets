@@ -5,6 +5,7 @@ uniform float uStrength;
 uniform float uWarpStrength;
 uniform float uPositionFrequency;
 uniform float uNoiseMinValue;
+uniform bool uOceans;
 #include ../../includes/simplexNoise4d.glsl
 
 
@@ -23,8 +24,10 @@ float getHeightNoise(vec3 position){
     elevation = pow(abs(elevation), 2.0) * elevationSign;
      
     elevation *= uStrength;
+    // if (uOceans){
+    //     elevation = max(0.0,elevation - uNoiseMinValue);
+    // }
     
-    elevation = max(0.0,elevation - uNoiseMinValue);
     return elevation;
 
 }
@@ -58,5 +61,7 @@ void main(){
     vec3 toA = normalize(positionA - csm_Position);
     vec3 toB = normalize(positionB - csm_Position);
     csm_Normal = cross(toA, toB);
+
+   
 
 }
