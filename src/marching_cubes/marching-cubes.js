@@ -292,7 +292,7 @@ const edgeTable = [
     0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0,
 ];
 
-class MarchingCubes {
+export default class MarchingCubes {
     constructor(xMax, yMax, zMax, sampleSize = 1) {
         this.xMax = xMax;
         this.yMax = yMax;
