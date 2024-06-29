@@ -5,127 +5,8 @@ import planetVertexShader from './shaders/planet/vertex.glsl'
 import planetFragmentShader from './shaders/planet/fragment.glsl'
 import CustomShaderMaterial from 'three-custom-shader-material/vanilla'
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
-import MarchingCubes from './marching_cubes/marching-cubes.js'
 
-
-const ISO_LEVEL = 0;
-
-const WIDTH = 60;
-const HEIGHT = WIDTH;
-const DEPTH = WIDTH;
 let globalSetup = {};
-class Terrain {
-    constructor(width, height, depth, sampleSize) {
-        this.xMax = Math.floor(width / (2 * sampleSize));
-        this.yMax = Math.floor(height / (2 * sampleSize));
-        this.zMax = Math.floor(depth / (2 * sampleSize));
-        this.sampleSize = sampleSize;
-
-        this.xMax2 = 2 * this.xMax;
-        this.yMax2 = 2 * this.yMax;
-        this.zMax2 = 2 * this.zMax;
-        this.fieldBuffer = new Float32Array((this.xMax + 1) * (this.yMax + 1) * (this.zMax + 1) * 8);
-
-        // noise values
-        this.numOctaves = 4;
-        this.lacunarity = 2;
-        this.persistence = 0.5;
-        this.noiseScale = 2;
-        this.noiseWeight = 7;
-        this.floorOffset = 5;
-        this.weightMultiplier = 3.6;
-        this.simplex = new SimplexNoise();
-
-        // graphics
-        this.geometry = new THREE.BufferGeometry();
-        this.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-        this.mesh = new THREE.Mesh(this.geometry, this.material);
-        this.marchingCubes = new MarchingCubes(this.xMax, this.yMax, this.zMax, sampleSize);
-
-        // generate mesh geometry
-        this.generateHeightField();
-        this.marchingCubes.generateMesh(this.geometry, ISO_LEVEL, this);
-    }
-
-    setField(i, j, k, amt) {
-        this.fieldBuffer[i * this.xMax2 * this.zMax2 + k * this.zMax2 + j] = amt;
-    }
-
-    getField(i, j, k) {
-        return this.fieldBuffer[i * this.xMax2 * this.zMax2 + k * this.zMax2 + j];
-    }
-
-    getMesh() {
-        return this.mesh;
-    }
-
-    makeShape(brushSize, point, multiplier) {
-        for (let x = -brushSize - 2; x <= brushSize + 2; x++) {
-            for (let y = -brushSize - 2; y <= brushSize + 2; y++) {
-                for (let z = -brushSize - 2; z <= brushSize + 2; z++) {
-                    let distance = this.#sphereDistance(point.clone(), new THREE.Vector3(point.x + x, point.y + y, point.z + z), brushSize);
-                    if (distance < 0) {
-                        let xi = Math.round(point.x + x) + this.xMax;
-                        let yi = Math.round(point.y + y) + this.yMax;
-                        let zi = Math.round(point.z + z) + this.zMax;
-
-                        this.setField(xi, yi, zi, this.getField(xi, yi, zi) - distance * multiplier);
-                    }
-                }
-            }
-        }
-        this.regenerateMesh();
-    }
-
-    regenerateMesh() {
-        this.marchingCubes.generateMesh(this.geometry, ISO_LEVEL, this);
-    }
-
-    generateHeightField() {
-        for (let i = -this.xMax; i < this.xMax + 1; i++) {
-            let x = i * this.sampleSize;
-            for (let j = -this.yMax; j < this.yMax + 1; j++) {
-                let y = j * this.sampleSize;
-                for (let k = -this.zMax; k < this.zMax + 1; k++) {
-                    let z = k * this.sampleSize;
-                    this.setField(i + this.xMax, j + this.yMax, k + this.zMax, this.#heightValue(x, y, z));
-                }
-            }
-        }
-    }
-
-    #heightValue(x, y, z) {
-        let offsetNoise = 1;
-        let noise = 0;
-
-        let frequency = this.noiseScale / 100;
-        let amplitude = 1;
-        let weight = 1;
-        for (var j = 0; j < this.numOctaves; j++) {
-            let n = this.simplex.noise3D(
-                (x + offsetNoise) * frequency,
-                (y + offsetNoise) * frequency,
-                (z + offsetNoise) * frequency,
-            );
-            let v = 1 - Math.abs(n);
-            v = v * v * weight;
-            weight = Math.max(Math.min(v * this.weightMultiplier, 1), 0);
-            noise += v * amplitude;
-            amplitude *= this.persistence;
-            frequency *= this.lacunarity;
-        }
-
-        let finalVal = -(y + this.floorOffset) + noise * this.noiseWeight;
-
-        return -finalVal;
-    }
-
-    #sphereDistance = (spherePos, point, radius) => {
-        return spherePos.distanceTo(point) - radius;
-    }
-}
-
-
 
  function setup ()  {
 
@@ -197,11 +78,6 @@ class Terrain {
     }
 
     gui.add( planetProperties, 'haveOcean' ).onChange( ()  => uniforms.uOceans = planetProperties.haveOcean ) 	// checkbox
-
-    // // add terrain
-    // const terrain = new Terrain(WIDTH, HEIGHT, DEPTH, 1);
-    // scene.add(terrain.getMesh());
-
 
     /**
      * Lights

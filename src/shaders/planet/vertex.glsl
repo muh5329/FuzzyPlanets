@@ -24,9 +24,9 @@ float getHeightNoise(vec3 position){
     elevation = pow(abs(elevation), 2.0) * elevationSign;
      
     elevation *= uStrength;
-    // if (uOceans){
-    //     elevation = max(0.0,elevation - uNoiseMinValue);
-    // }
+    if (uOceans){
+        elevation = max(0.0,elevation - uNoiseMinValue);
+    }
     
     return elevation;
 
