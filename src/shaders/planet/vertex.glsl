@@ -11,6 +11,24 @@ uniform bool uOceans;
 #include ../../includes/cubicNoise.glsl
 
 
+//==========================================================================================
+// fbm constructions
+//==========================================================================================
+
+const mat3 m3  = mat3( 0.00,  0.80,  0.60,
+                      -0.80,  0.36, -0.48,
+                      -0.60, -0.48,  0.64 );
+const mat3 m3i = mat3( 0.00, -0.80, -0.60,
+                       0.80,  0.36, -0.48,
+                       0.60, -0.48,  0.64 );
+const mat2 m2 = mat2(  0.80,  0.60,
+                      -0.60,  0.80 );
+const mat2 m2i = mat2( 0.80, -0.60,
+                       0.60,  0.80 );
+
+//------------------------------------------------------------------------------------------
+
+
 float getCubicNoise(vec3 position) {
     return cubicNoise(position);
 
@@ -31,8 +49,10 @@ float getHeightNoise(vec3 position){
                         
     float elevation = 0.0;
     elevation += getCubicNoise(warpedPosition) / 2.0 ;
-    elevation +=  getCubicNoise(warpedPosition * 2.0)/ 4.0 ;
-    elevation +=  getCubicNoise(warpedPosition * 4.0) / 8.0 ;
+    elevation +=  getCubicNoise(warpedPosition*m3 * 2.0)/ 4.0 ;
+    elevation +=  getCubicNoise(warpedPosition*m3*m3*4.0) / 8.0 ;
+    elevation +=  getCubicNoise(warpedPosition*m3*m3*m3*8.0) / 16.0 ;
+    //elevation +=  getCubicNoise(warpedPosition*m3*m3*m3*16.0) / 32.0 ;
 
     float elevationSign = sign(elevation);
     elevation = pow(abs(elevation), 3.0) * elevationSign;

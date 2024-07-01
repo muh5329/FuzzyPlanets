@@ -6,9 +6,11 @@ import planetFragmentShader from './shaders/planet/fragment.glsl'
 import CustomShaderMaterial from 'three-custom-shader-material/vanilla'
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js'
 
+window.onload = () => setup();
+
 let globalSetup = {};
 
- function setup ()  {
+const setup = () =>{
 
     /**
      * Base
@@ -37,6 +39,7 @@ let globalSetup = {};
     let planetGeometry = new THREE.IcosahedronGeometry(2.5, 50)
     planetGeometry = mergeVertices(planetGeometry)
     planetGeometry.computeTangents()
+
     const planetMaterial = new CustomShaderMaterial({
         // CSM
         baseMaterial: THREE.MeshStandardMaterial,
@@ -89,6 +92,10 @@ let globalSetup = {};
     directionalLight.shadow.normalBias = 0.05
     directionalLight.position.set(0.25, 2, - 2.25)
     scene.add(directionalLight)
+
+
+    const ambientLight = new THREE.AmbientLight( 0x404040 ); // soft white 
+    scene.add(ambientLight)
 
 
     /**
@@ -154,28 +161,34 @@ let globalSetup = {};
     globalSetup["camera"] = camera;
     globalSetup["controls"] = controls;
     console.log(globalSetup)
+
+
+    const draw = () =>{
+
+        const renderer = globalSetup["renderer"]
+        const clock = globalSetup["clock"]
+        const window = globalSetup["window"] 
+        const scene  = globalSetup["scene"] 
+        const camera = globalSetup["camera"] 
+        const controls = globalSetup["controls"] 
+        const elapsedTime = clock.getElapsedTime()
+    
+        //earth.rotation.y = elapsedTime * 0.1
+    
+        // Update controls
+        controls.update()
+    
+        // Render
+        renderer.render(scene, camera)
+    
+        // Call draw again on the next frame
+        window.requestAnimationFrame(draw)
+    }
+
+    draw()
     
 }
-const draw = () =>{
 
-    const renderer = globalSetup["renderer"]
-    const clock = globalSetup["clock"]
-    const  window = globalSetup["window"] 
-    const  scene  = globalSetup["scene"] 
-    const camera = globalSetup["camera"] 
-    const controls = globalSetup["controls"] 
-    const elapsedTime = clock.getElapsedTime()
 
-    //earth.rotation.y = elapsedTime * 0.1
 
-    // Update controls
-    controls.update()
 
-    // Render
-    renderer.render(scene, camera)
-
-    // Call draw again on the next frame
-    window.requestAnimationFrame(draw)
-}
-setup()
-draw()
