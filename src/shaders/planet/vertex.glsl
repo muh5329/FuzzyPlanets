@@ -1,4 +1,5 @@
 attribute vec4 tangent;
+
 uniform float uTime;
 uniform float uWarpFrequency;
 uniform float uStrength;
@@ -31,14 +32,11 @@ const mat2 m2i = mat2( 0.80, -0.60,
 
 float getCubicNoise(vec3 position) {
     return cubicNoise(position);
-
-    
 }
 
 float getSimplexNoise(vec3 position) {
    return simplexNoise4d(vec4(position,0.0));
 }
-
 
 float getHeightNoise(vec3 position){
    
