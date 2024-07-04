@@ -49,89 +49,89 @@
 
 void main(){
 
-    // // Calculate terrain height
-    // float h = terrainHeight(
-    //   type,
-    //   fragPosition,
-    //   amplitude, 
-    //   sharpness,
-    //   offset,
-    //   period, 
-    //   persistence, 
-    //   lacunarity, 
-    //   octaves,noiseFunction);
+    // Calculate terrain height
+    float h = terrainHeight(
+      type,
+      fragPosition,
+      amplitude, 
+      sharpness,
+      offset,
+      period, 
+      persistence, 
+      lacunarity, 
+      octaves,noiseFunction);
 
-    // vec3 dx = bumpOffset * fragTangent;
-    // float h_dx = terrainHeight(
-    //   type,
-    //   fragPosition + dx,
-    //   amplitude, 
-    //   sharpness,
-    //   offset,
-    //   period, 
-    //   persistence, 
-    //   lacunarity, 
-    //   octaves,noiseFunction);
+    vec3 dx = bumpOffset * fragTangent;
+    float h_dx = terrainHeight(
+      type,
+      fragPosition + dx,
+      amplitude, 
+      sharpness,
+      offset,
+      period, 
+      persistence, 
+      lacunarity, 
+      octaves,noiseFunction);
 
-    // vec3 dy = bumpOffset * fragBitangent;
-    // float h_dy = terrainHeight(
-    //   type,
-    //   fragPosition + dy,
-    //   amplitude, 
-    //   sharpness,
-    //   offset,
-    //   period, 
-    //   persistence, 
-    //   lacunarity, 
-    //   octaves,noiseFunction);
+    vec3 dy = bumpOffset * fragBitangent;
+    float h_dy = terrainHeight(
+      type,
+      fragPosition + dy,
+      amplitude, 
+      sharpness,
+      offset,
+      period, 
+      persistence, 
+      lacunarity, 
+      octaves,noiseFunction);
 
-    // vec3 pos = fragPosition * (radius + h);
-    // vec3 pos_dx = (fragPosition + dx) * (radius + h_dx);
-    // vec3 pos_dy = (fragPosition + dy) * (radius + h_dy);
+    vec3 pos = fragPosition * (radius + h);
+    vec3 pos_dx = (fragPosition + dx) * (radius + h_dx);
+    vec3 pos_dy = (fragPosition + dy) * (radius + h_dy);
 
-    // // Recalculate surface normal post-bump mapping
-    // vec3 bumpNormal = normalize(cross(pos_dx - pos, pos_dy - pos));
-    // // Mix original normal and bumped normal to control bump strength
-    // vec3 N = normalize(mix(fragNormal, bumpNormal, bumpStrength));
+    // Recalculate surface normal post-bump mapping
+    vec3 bumpNormal = normalize(cross(pos_dx - pos, pos_dy - pos));
+    // Mix original normal and bumped normal to control bump strength
+    vec3 N = normalize(mix(fragNormal, bumpNormal, bumpStrength));
   
-    // // Normalized light direction (points in direction that light travels)
-    // vec3 L = normalize(-lightDirection);
-    // // View vector from camera to fragment
-    // vec3 V = normalize(cameraPosition - pos);
-    // // Reflected light vector
-    // vec3 R = normalize(reflect(L, N));
+    // Normalized light direction (points in direction that light travels)
+    vec3 L = normalize(-lightDirection);
+    // View vector from camera to fragment
+    vec3 V = normalize(cameraPosition - pos);
+    // Reflected light vector
+    vec3 R = normalize(reflect(L, N));
 
-    // float diffuse = diffuseIntensity * max(0.0, dot(N, -L));
+    float diffuse2 = diffuseIntensity * max(0.0, dot(N, -L));
 
-    // // https://ogldev.org/www/tutorial19/tutorial19.html
-    // float specularFalloff = clamp((transition3 - h) / transition3, 0.0, 1.0);
-    // float specular = max(0.0, specularFalloff * specularIntensity * pow(dot(V, R), shininess));
+    // https://ogldev.org/www/tutorial19/tutorial19.html
+    float specularFalloff = clamp((transition3 - h) / transition3, 0.0, 1.0);
+    float specular = max(0.0, specularFalloff * specularIntensity * pow(dot(V, R), shininess));
 
-    // float light = ambientIntensity + diffuse + specular;
+    float light = ambientIntensity + diffuse2 + specular;
 
-    // // Blender colors layer by layer
-    // vec3 color12 = mix(
-    //   color1, 
-    //   color2, 
-    //   smoothstep(transition2 - blend12, transition2 + blend12, h));
+    // Blender colors layer by layer
+    vec3 color12 = mix(
+      color1, 
+      color2, 
+      smoothstep(transition2 - blend12, transition2 + blend12, h));
 
-    // vec3 color123 = mix(
-    //   color12, 
-    //   color3, 
-    //   smoothstep(transition3 - blend23, transition3 + blend23, h));
+    vec3 color123 = mix(
+      color12, 
+      color3, 
+      smoothstep(transition3 - blend23, transition3 + blend23, h));
 
-    // vec3 color1234 = mix(
-    //   color123, 
-    //   color4, 
-    //   smoothstep(transition4 - blend34, transition4 + blend34, h));
+    vec3 color1234 = mix(
+      color123, 
+      color4, 
+      smoothstep(transition4 - blend34, transition4 + blend34, h));
 
-    // vec3 finalColor = mix(
-    //   color1234, 
-    //   color5, 
-    //   smoothstep(transition5 - blend45, transition5 + blend45, h));
+    vec3 finalColor = mix(
+      color1234, 
+      color5, 
+      smoothstep(transition5 - blend45, transition5 + blend45, h));
     
-    // csm_DiffuseColor = vec4(light * finalColor * lightColor, 1.0);
-    csm_DiffuseColor = vec4(1.0,1.0,1.0, 1.0);
+    csm_DiffuseColor = vec4(light * finalColor * lightColor, 1.0);
+    // csm_DiffuseColor = vec4(1.0,1.0,1.0, 1.0);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
 }
