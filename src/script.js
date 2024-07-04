@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import GUI from 'lil-gui'
+import createUI from './ui';
 import planetVertexShader from './shaders/planet/vertex.glsl'
 import planetFragmentShader from './shaders/planet/fragment.glsl'
 import CustomShaderMaterial from 'three-custom-shader-material/vanilla'
@@ -15,8 +16,6 @@ const setup = () =>{
     /**
      * Base
      */
-    // Debug
-    const gui = new GUI()
     // Canvas
     const canvas = document.querySelector('canvas.webgl')
     // Scene
@@ -24,13 +23,54 @@ const setup = () =>{
     // Loaders
     const textureLoader = new THREE.TextureLoader()
     const uniforms = {
-        uTime: new  THREE.Uniform(0),
+        //Generic planet uniforms
         uStrength: new THREE.Uniform(2.0),
         uPositionFrequency: new THREE.Uniform(0.2),
         uWarpFrequency: new THREE.Uniform(5),
         uWarpStrength: new THREE.Uniform(0.5),
         uNoiseMinValue: new THREE.Uniform(0.00001),
         uOceans:new THREE.Uniform(true),
+        //Vertex Uniforms
+        uTime: new  THREE.Uniform(0),
+        type: new  THREE.Uniform(2),
+        noiseFunction: new  THREE.Uniform(1),
+        radius: new  THREE.Uniform(20.0),
+        amplitude: new  THREE.Uniform(1.19),
+        sharpness: new  THREE.Uniform(2.6),
+        offset: new  THREE.Uniform(-0.016),
+        period: new  THREE.Uniform(0.6),
+        persistence: new  THREE.Uniform(0.484),
+        lacunarity: new  THREE.Uniform(1.8),
+        octaves: new  THREE.Uniform(10),
+        bumpOffset: new  THREE.Uniform(0.001),
+        bumpStrength: new  THREE.Uniform(1.0),
+        // Fragment Uniforms
+        // LayersColors
+        color1: new  THREE.Uniform(new THREE.Color(0.014, 0.117, 0.279)),
+        color2: new  THREE.Uniform(new THREE.Color(0.080, 0.527, 0.351)),
+        color3: new  THREE.Uniform(new THREE.Color(0.620, 0.516, 0.372)),
+        color4: new  THREE.Uniform(new THREE.Color(0.149, 0.254, 0.084)),
+        color5: new  THREE.Uniform(new THREE.Color(0.150, 0.150, 0.150)),
+        //Transitions
+        transition2: new  THREE.Uniform(0.071 ),
+        transition3: new  THREE.Uniform(0.215),
+        transition4: new  THREE.Uniform(0.372 ),
+        transition5: new  THREE.Uniform(1.2),
+        //Blending 
+        blend12: new  THREE.Uniform(0.152),
+        blend23: new  THREE.Uniform(0.152),
+        blend34: new  THREE.Uniform(0.104),
+        blend45: new  THREE.Uniform(0.168),
+        //Bump
+        bumpStrength: new  THREE.Uniform(1.0),
+        bumpOffset: new  THREE.Uniform(0.001),
+        // Lights
+        ambientIntensity: new  THREE.Uniform(0.02),
+        diffuseIntensity: new  THREE.Uniform(1),
+        specularIntensity: new  THREE.Uniform( 2),
+        shininess: new  THREE.Uniform(10),
+        lightDirection: new  THREE.Uniform(new THREE.Vector3(1, 1, 1)),
+        lightColor: new  THREE.Uniform(new THREE.Color(0.150, 0.150, 0.150))
     }
     /**
      * Planet
@@ -66,21 +106,6 @@ const setup = () =>{
     const planet = new THREE.Mesh(planetGeometry, planetMaterial)
     planet.customDepthMaterial = planetDepthMaterial
     scene.add(planet)
-    gui.add(uniforms.uPositionFrequency, 'value', 0, 1, 0.001).name('uPositionFrequency')
-    gui.add(uniforms.uStrength, 'value', 0, 10, 0.001).name('uStrength')
-
-
-    gui.add(uniforms.uWarpFrequency, 'value', 0, 10, 0.001).name('uWarpFrequency')
-    gui.add(uniforms.uWarpStrength, 'value', 0, 1, 0.001).name('uWarpStrength')
-    gui.add(uniforms.uNoiseMinValue, 'value', 0.0000001, 1, 0.000001).name('uNoiseMinValue')
-    
-
-
-    var planetProperties = {
-        haveOcean: true,
-    }
-
-    gui.add( planetProperties, 'haveOcean' ).onChange( ()  => uniforms.uOceans = planetProperties.haveOcean ) 	// checkbox
 
     /**
      * Lights
@@ -162,7 +187,7 @@ const setup = () =>{
     globalSetup["controls"] = controls;
     console.log(globalSetup)
 
-
+    createUI(uniforms);
     const draw = () =>{
 
         const renderer = globalSetup["renderer"]

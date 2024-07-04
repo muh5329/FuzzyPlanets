@@ -1,4 +1,5 @@
 attribute vec4 tangent;
+
 uniform float uTime;
 uniform float uWarpFrequency;
 uniform float uStrength;
@@ -7,69 +8,49 @@ uniform float uPositionFrequency;
 uniform float uNoiseMinValue;
 uniform bool uOceans;
 
-#include ../../includes/simplexNoise4d.glsl
-#include ../../includes/cubicNoise.glsl
+// Terrain generation parameters
+uniform int type;
+uniform int noiseFunction;
+uniform float radius;
+uniform float amplitude;
+uniform float sharpness;
+uniform float offset;
+uniform float period;
+uniform float persistence;
+uniform float lacunarity;
+uniform int octaves;
+
+// Bump mapping
+uniform float bumpStrength;
+uniform float bumpOffset;
+
+varying vec3 fragPosition;
+varying vec3 fragNormal;
+varying vec3 fragTangent;
+varying vec3 fragBitangent;
 
 
-//==========================================================================================
-// fbm constructions
-//==========================================================================================
-
-const mat3 m3  = mat3( 0.00,  0.80,  0.60,
-                      -0.80,  0.36, -0.48,
-                      -0.60, -0.48,  0.64 );
-const mat3 m3i = mat3( 0.00, -0.80, -0.60,
-                       0.80,  0.36, -0.48,
-                       0.60, -0.48,  0.64 );
-const mat2 m2 = mat2(  0.80,  0.60,
-                      -0.60,  0.80 );
-const mat2 m2i = mat2( 0.80, -0.60,
-                       0.60,  0.80 );
-
-//------------------------------------------------------------------------------------------
+#include ../../includes/fractalTerrainHeight.glsl
 
 
-float getCubicNoise(vec3 position) {
-    return cubicNoise(position);
-
-    
+float getTerrainHeight( vec3 position){
+    float h = terrainHeight(
+    type,
+    position,
+    amplitude, 
+    sharpness,
+    offset,
+    period, 
+    persistence, 
+    lacunarity, 
+    octaves,
+    noiseFunction);
+    return h;
 }
 
-float getSimplexNoise(vec3 position) {
-   return simplexNoise4d(vec4(position,0.0));
-}
-
-
-float getHeightNoise(vec3 position){
-   
-    vec3 warpedPosition = position;
-    warpedPosition += uTime * 0.2;
-    warpedPosition += getCubicNoise(warpedPosition * uPositionFrequency * uWarpFrequency ) * uWarpStrength;
-                        
-                        
-    float elevation = 0.0;
-    elevation += getCubicNoise(warpedPosition) / 2.0 ;
-    elevation +=  getCubicNoise(warpedPosition*m3 * 2.0)/ 4.0 ;
-    elevation +=  getCubicNoise(warpedPosition*m3*m3*4.0) / 8.0 ;
-    elevation +=  getCubicNoise(warpedPosition*m3*m3*m3*8.0) / 16.0 ;
-    //elevation +=  getCubicNoise(warpedPosition*m3*m3*m3*16.0) / 32.0 ;
-
-    float elevationSign = sign(elevation);
-    elevation = pow(abs(elevation), 3.0) * elevationSign;
-     
-    elevation *= uStrength;
-    if (uOceans){
-        elevation = max(0.0,elevation - uNoiseMinValue);
-       
-    }
-    
-    return elevation;
-
-}
 
 void main(){
 
-    
     /*
     *   Landmass Generation 
     *
@@ -83,20 +64,22 @@ void main(){
     vec3 positionB = csm_Position + biTangent * shift;
 
     // Noise positon reseiving our land mass generation
-    float landHeight = getHeightNoise(csm_Position);
+    float landHeight = getTerrainHeight(csm_Position);
 
     // Apply height to landmass and tanget/bitangent vectors
     //  currently noise function is only  outward facing so no overhangs or caves
     //    but something i definetly want to explore more in the future with a more powerful function
     csm_Position += landHeight * normal;
-    positionA    += getHeightNoise(positionA) * normal;
-    positionB    += getHeightNoise(positionB) * normal;
+    positionA    += getTerrainHeight(positionA) * normal;
+    positionB    += getTerrainHeight(positionB) * normal;
 
     // Compute normal and normalize to correct lighting
     vec3 toA = normalize(positionA - csm_Position);
     vec3 toB = normalize(positionB - csm_Position);
     csm_Normal = cross(toA, toB);
 
-   
-
+    fragPosition = csm_Position;
+    fragNormal = csm_Normal;
+    fragTangent = tangent.xyz;
+    fragBitangent = cross(normal, tangent.xyz);
 }
