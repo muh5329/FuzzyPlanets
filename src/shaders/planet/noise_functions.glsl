@@ -1,9 +1,9 @@
-#include ./../includes/cubicNoise.glsl
+
 //	Simplex 3D Noise 
 //	by Ian McEwan, Ashima Arts
 //
-vec4 permute2(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
-vec4 taylorInvSqrt2(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
+vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}
+vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}
 
 // 
 float simplex3(vec3 v) { 
@@ -27,7 +27,7 @@ float simplex3(vec3 v) {
 
     // Permutations
     i = mod(i, 289.0 ); 
-    vec4 p = permute2( permute2( permute2( 
+    vec4 p = permute( permute( permute( 
             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
             + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) 
             + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
@@ -62,7 +62,7 @@ float simplex3(vec3 v) {
     vec3 p3 = vec3(a1.zw,h.w);
 
     //Normalise gradients
-    vec4 norm = taylorInvSqrt2(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
+    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
     p0 *= norm.x;
     p1 *= norm.y;
     p2 *= norm.z;
@@ -75,42 +75,26 @@ float simplex3(vec3 v) {
                                 dot(p2,x2), dot(p3,x3) ) );
 }
 
-
-
-/**
-*  src  -> https://github.com/dgreenheck/threejs-procedural-planets/blob/main/scripts/main.js
-*
-*/
-
-
 float fractal3(      
     vec3 v,
     float sharpness,
     float period,
     float persistence,
     float lacunarity,
-    int octaves,
-    int noiseFunction
+    int octaves
 ) {
     float n = 0.0;
     float a = 1.0; // Amplitude for current octave
     float max_amp = 0.0; // Accumulate max amplitude so we can normalize after
     float P = period;  // Period for current octave
-    if (noiseFunction == 1){ 
-        for(int i = 0; i < octaves; i++) {
-            n += a * simplex3(v / P);
-            a *= persistence;
-            max_amp += a;
-            P /= lacunarity;
-        }
-    } else if (noiseFunction == 2) {
-        for(int i = 0; i < octaves; i++) {
-            n += a * cubicNoise(v / P);
-            a *= persistence;
-            max_amp += a;
-            P /= lacunarity;
-        }
+
+    for(int i = 0; i < octaves; i++) {
+        n += a * simplex3(v / P);
+        a *= persistence;
+        max_amp += a;
+        P /= lacunarity;
     }
+
     // Normalize noise between [0.0, amplitude]
     return n / max_amp;
 }
@@ -124,17 +108,12 @@ float terrainHeight(
     float period,
     float persistence,
     float lacunarity,
-    int octaves,
-    int noiseFunction
+    int octaves
 ) {
     float h = 0.0;
 
-    if (type == 1) { 
-        if (noiseFunction == 1){ 
-            h = amplitude * simplex3(v / period);
-        } else if (noiseFunction == 2){
-            h = amplitude * cubicNoise(v / period);
-        }
+    if (type == 1) {
+    h = amplitude * simplex3(v / period);
     } else if (type == 2) {
     h = amplitude * fractal3(
         v,
@@ -142,7 +121,7 @@ float terrainHeight(
         period, 
         persistence, 
         lacunarity, 
-        octaves,noiseFunction);
+        octaves);
     h = amplitude * pow(max(0.0, (h + 1.0) / 2.0), sharpness);
     } else if (type == 3) {
     h = fractal3(
@@ -151,9 +130,10 @@ float terrainHeight(
         period, 
         persistence, 
         lacunarity, 
-        octaves,noiseFunction);
+        octaves);
     h = amplitude * pow(max(0.0, 1.0 - abs(h)), sharpness);
     }
+
     // Multiply by amplitude and adjust offset
     return max(0.0, h + offset);
 }

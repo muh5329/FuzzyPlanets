@@ -5,7 +5,7 @@ export default function createUI(uniforms) {
 
   const terrainFolder = gui.addFolder('Terrain');
   terrainFolder.add(uniforms.type, 'value', { simplex: 1, fractal: 2, ridgedFractal: 3 }).name('Type');
-  terrainFolder.add(uniforms.noiseFunction, 'value', { simplex: 1, Cubic: 2 }).name('NoiseFunction');
+  // terrainFolder.add(uniforms.noiseFunction, 'value', { simplex: 1, Cubic: 2 }).name('NoiseFunction');
   terrainFolder.add(uniforms.amplitude, 'value', 0.1, 1.5).name('Amplitude');
   terrainFolder.add(uniforms.sharpness, 'value', 0, 5).name('Sharpness');
   terrainFolder.add(uniforms.offset, 'value', -2, 2).name('Offset');
