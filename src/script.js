@@ -68,17 +68,6 @@ function loadScene() {
   document.body.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-
-  // https://opengameart.org/content/night-sky-skybox-generator
-  scene.background = new THREE.CubeTextureLoader()
-    .load( [
-          'xpos.png',
-          'xneg.png',
-          'ypos.png',
-          'yneg.png',
-          'zpos.png',
-          'zneg.png'
-        ] );
         
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   const controls = new OrbitControls(camera, renderer.domElement);
