@@ -3,10 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earth</title>
+    <title>Fuzzy Planets</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <div class="center_title">
+      <div class="title_card">
+        Fuzzy Planets
+      </div>
+        
+      <form  method="post" >
+          <label>
+            Input:
+            <input name="submitted-name" autocomplete="name" />
+          </label>
+          <button>Submit</button>
+      </form>
+    </div>
+   
     <canvas class="webgl"></canvas>
     <script type="module" src="./script.js"></script>
 </body>

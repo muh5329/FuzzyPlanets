@@ -9,7 +9,6 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 window.onload = () => loadScene();
-
 const planetParams = {
   type: { value: 2 },
   radius: { value: 20.0 },
@@ -44,31 +43,20 @@ const planetParams = {
   blend45: { value: 0.168 }
 }
 
-const atmosphereParams = {
-  particles: { value: 4000 },
-  minParticleSize: { value: 50 },
-  maxParticleSize: { value: 100 },
-  radius: { value: planetParams.radius.value + 1 },
-  thickness: { value: 1.5 },
-  density: { value: 0 },
-  opacity: { value: 0.35 },
-  scale: { value: 8 },
-  color: { value: new THREE.Color(0xffffff) },
-  speed: { value: 0.03 },
-  lightDirection: planetParams.lightDirection
-};
 
 function loadScene() {
   console.log('loading scene');
-
   const clock = new THREE.Clock(true);
-
-  const renderer = new THREE.WebGLRenderer();
+  const canvas = document.querySelector('canvas.webgl')
+  const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: true
+})
   renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+  //document.body.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-        
+
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableZoom = false;
@@ -77,11 +65,30 @@ function loadScene() {
   controls.autoRotateSpeed = 0.2;
   camera.position.z = 50;
 
+/**
+ *  Handle mouse entry and exit
+ * 
+  */
+
+// document.addEventListener('DOMContentLoaded', function() {
+//   const canvas = document.querySelector('canvas.webgl');
+//   canvas.addEventListener('mouseenter', function(event) {
+    
+//     controls.enabled = false;
+//   });
+//   canvas.addEventListener('mouseleave', function(event) {
+//     controls.enabled = false;
+//   });
+// });
+
+
+
+
   const composer = new EffectComposer(renderer);
   const renderPass = new RenderPass(scene, camera);
 
   composer.addPass(renderPass);
- 
+
   const bloomPass = new UnrealBloomPass();
   bloomPass.threshold = 0;
   bloomPass.strength = 0.2;
@@ -98,7 +105,7 @@ function loadScene() {
     fragmentShader: planetFragmentShader,
   });
 
-  
+
   const planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), material);
   planet.geometry.computeTangents();
   scene.add(planet);
@@ -118,7 +125,7 @@ function loadScene() {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  createUI(planetParams, atmosphereParams, bloomPass);
+  createUI(planetParams, bloomPass);
   animate();
 
   console.log('done');
