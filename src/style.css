@@ -35,7 +35,7 @@ body
     background: whitesmoke;
 }
 
-.entries
+.entries > .sub_title
 {
     top: 0;
     left: 0;

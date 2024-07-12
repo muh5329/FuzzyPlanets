@@ -65,25 +65,6 @@ function loadScene() {
   controls.autoRotateSpeed = 0.2;
   camera.position.z = 50;
 
-/**
- *  Handle mouse entry and exit
- * 
-  */
-
-// document.addEventListener('DOMContentLoaded', function() {
-//   const canvas = document.querySelector('canvas.webgl');
-//   canvas.addEventListener('mouseenter', function(event) {
-    
-//     controls.enabled = false;
-//   });
-//   canvas.addEventListener('mouseleave', function(event) {
-//     controls.enabled = false;
-//   });
-// });
-
-
-
-
   const composer = new EffectComposer(renderer);
   const renderPass = new RenderPass(scene, camera);
 
