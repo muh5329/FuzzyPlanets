@@ -32,13 +32,27 @@ body
 
 .center_title > .title_card
 {   
-    background: whitesmoke;
+    background: rgb(49, 43, 108);
+    color: wheat
 }
 
-.entries > .sub_title
+.left_entries 
 {
-    top: 0;
+    position: absolute;
+    top: 40%;
     left: 0;
     z-index: 2;
     background: whitesmoke;
+}
+
+
+.container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.row {
+    margin-bottom: 5px;
+    padding: 5px;
+    background-color: #f0f0f0;
 }

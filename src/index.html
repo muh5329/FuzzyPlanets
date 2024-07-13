@@ -7,24 +7,22 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+  
     <div class="center_title">
       <div class="title_card">
         Fuzzy Planets
       </div>
         
       <form  method="post" >
-          <label>
-            Input:
-            <input name="submitted-name" autocomplete="name" />
-          </label>
-          <button>Submit</button>
+          <input id="in_entry" name="entry" autocomplete="name" />
+          <button type="button" id="submitEntry" >Submit</button>
       </form>
     </div>
 
-    <div class="entries">
-     <div class="sub_title">
-      
-     </div>
+    <div id="leftEntries" class="left_entries">
+      <div class="sub_title">
+          left hand side 
+      </div>
     </div>
    
     <canvas class="webgl"></canvas>

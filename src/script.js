@@ -105,6 +105,7 @@ function loadScene() {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
+  document.getElementById ("submitEntry").addEventListener ("click", onSubmitInput, false);
 
   createUI(planetParams, bloomPass);
   animate();
@@ -114,4 +115,34 @@ function loadScene() {
 
 
 
+export function onSubmitInput(e){
+  try{
 
+       // Get the text from the input field
+       var text = document.getElementById("in_entry").value.trim();
+            
+       if (text === "") {
+           alert("Please enter some text.");
+           return;
+       }
+       
+       // Create a new div element
+       var newDiv = document.createElement("div");
+       newDiv.classList.add("row");
+       newDiv.textContent = text;
+       
+       // Append the new div to the target container
+       var targetContainer = document.getElementById("leftEntries");
+       if (targetContainer.children.length >= 6) {
+          targetContainer.removeChild(targetContainer.children[0]);
+       }
+       targetContainer.appendChild(newDiv);
+
+       // Clear the input field
+       document.getElementById("in_entry").value = "";
+        
+
+  } catch (e){
+    console.log(e);
+  }
+}
