@@ -53,7 +53,7 @@ function loadScene() {
     antialias: true
 })
   renderer.setSize(window.innerWidth, window.innerHeight);
-  //document.body.appendChild(renderer.domElement);
+
 
   const scene = new THREE.Scene();
 
@@ -106,13 +106,20 @@ function loadScene() {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
   document.getElementById ("submitEntry").addEventListener ("click", onSubmitInput, false);
+  var input = document.getElementById('in_entry');
+  input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+          e.preventDefault(); // Prevent default form submission
+          onSubmitInput(); 
+      }
+  });
+
 
   createUI(planetParams, bloomPass);
   animate();
 
   console.log('done');
 }
-
 
 
 export function onSubmitInput(e){
@@ -134,7 +141,7 @@ export function onSubmitInput(e){
        // Append the new div to the target container
        var targetContainer = document.getElementById("leftEntries");
        if (targetContainer.children.length >= 6) {
-          targetContainer.removeChild(targetContainer.children[0]);
+          targetContainer.removeChild(targetContainer.children[1]);
        }
        targetContainer.appendChild(newDiv);
 
