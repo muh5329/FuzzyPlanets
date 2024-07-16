@@ -43,6 +43,9 @@ const planetParams = {
   blend45: { value: 0.168 }
 }
 
+// List of global traits the user has typed out 
+let globalTraits = []
+
 
 function loadScene() {
   console.log('loading scene');
@@ -140,8 +143,10 @@ export function onSubmitInput(e){
        
        // Append the new div to the target container
        var targetContainer = document.getElementById("leftEntries");
+       globalTraits.push(text)
        if (targetContainer.children.length >= 6) {
           targetContainer.removeChild(targetContainer.children[1]);
+          globalTraits.shift()
        }
        targetContainer.appendChild(newDiv);
 
