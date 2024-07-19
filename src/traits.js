@@ -18,6 +18,15 @@ const shallowOceans = {
 }
 
 
+const highMountains = {
+    "type":"constraint",
+    "amplitude":{
+        "low":0.084,
+        "high":0.228
+    }
+}
+
+
 export default function BuildPlanetFromTraits( traits){
     // Based on the traits , the traits will create limitations on certain values and ranges,
     // will add certain shaders or features,
