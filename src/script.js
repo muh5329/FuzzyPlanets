@@ -3,6 +3,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import createUI from './ui';
 import planetVertexShader from './shaders/planet/vertex.glsl'
 import planetFragmentShader from './shaders/planet/fragment.glsl'
+import atmosphereVertexShader from './shaders/atmosphere/vertex.glsl'
+import atmosphereFragmentShader from './shaders/atmosphere/fragment.glsl'
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -45,6 +47,13 @@ const planetParams = {
 
 // List of global traits the user has typed out 
 let globalTraits = []
+
+/**
+ * Earth
+ */
+const earthParameters = {}
+earthParameters.atmosphereDayColor = '#00aaff'
+earthParameters.atmosphereTwilightColor = '#ff6600'
 
 
 function loadScene() {
@@ -89,10 +98,28 @@ function loadScene() {
     fragmentShader: planetFragmentShader,
   });
 
+  // Atmosphere
+  const atmosphereMaterial = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    transparent: true,
+    vertexShader: atmosphereVertexShader,
+    fragmentShader: atmosphereFragmentShader,
+    uniforms:
+    {
+        uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
+        uAtmosphereDayColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereDayColor)),
+        uAtmosphereTwilightColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereTwilightColor))
+    }
+  })
+
 
   const planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), material);
   planet.geometry.computeTangents();
   scene.add(planet);
+
+  const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), atmosphereMaterial);
+  atmosphere.scale.set(22.04, 22.04, 22.04)
+  scene.add(atmosphere)
 
 
   function animate() {
