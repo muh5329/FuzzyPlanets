@@ -41,6 +41,11 @@ export default function BuildPlanetFromTraits( traits){
     // will add certain shaders or features,
     // or will add entirely new ideas.
 
+    // The idea is this. if the user types in a trait, it the trait type is constraint,
+    //   based upon the given entry, the planets basePlanetParams will have its 
+    //   params constrainted between a random low and high value going in order of traits
+    //   layer by layer.
+
 
 
 
