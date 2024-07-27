@@ -11,12 +11,13 @@ const basePlanetParams = {
 
 const shallowOceans = {
     "type":"constraint",
-    "offset":{
-        "low":0.084,
-        "high":0.228
-    }
+    "feilds" : [{
+        "offset":{
+                "low":0.084,
+                "high":0.228
+            }
+    }],
 }
-
 
 const highMountains = {
     "type":"constraint",
@@ -34,7 +35,7 @@ const snowPeakMountains = {
     }
 }
 
-
+const options = ["snow", "mountains","shallow","oceans"]
 
 export default function BuildPlanetFromTraits( traits){
     // Based on the traits , the traits will create limitations on certain values and ranges,
@@ -46,7 +47,25 @@ export default function BuildPlanetFromTraits( traits){
     //   params constrainted between a random low and high value going in order of traits
     //   layer by layer.
 
+    let planetParams = basePlanetParams.clone();
 
+        for (let trait in traits){
+            if (trait in options){
+                GetConstraintValueFromTrait(trait)
+            }  
+        }
+        
+   
 
+}
+function GetConstraintValueFromTrait(trait){
+    let feilds = [];
+    switch (trait) {
+        case "shallow":
+            let feilds = shallowOceans.feilds;
+            break;
+        default:
+    }
 
+    return feilds
 }
