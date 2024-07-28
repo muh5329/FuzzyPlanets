@@ -11,7 +11,7 @@ const basePlanetParams = {
 
 const shallowOceans = {
     "type":"constraint",
-    "feilds" : [{
+    "fields" : [{
         "offset":{
                 "low":0.084,
                 "high":0.228
@@ -21,18 +21,22 @@ const shallowOceans = {
 
 const highMountains = {
     "type":"constraint",
-    "amplitude":{
+    "fields" : [{
+        "amplitude":{
         "low":0.084,
         "high":0.228
-    }
+        }
+    }],
 }
 
 const snowPeakMountains = {
     "type":"constraint",
-    "amplitude":{
+    "fields" : [{
+        "amplitude":{
         "low":0.084,
         "high":0.228
     }
+    }],
 }
 
 const options = ["snow", "mountains","shallow","oceans"]
@@ -51,21 +55,43 @@ export default function BuildPlanetFromTraits( traits){
 
         for (let trait in traits){
             if (trait in options){
-                GetConstraintValueFromTrait(trait)
+                getConstraintValueFromTrait(trait)
             }  
         }
         
-   
-
 }
-function GetConstraintValueFromTrait(trait){
-    let feilds = [];
+
+function getConstraintValueFromTrait(trait){
+    let final = [];
     switch (trait) {
         case "shallow":
-            let feilds = shallowOceans.feilds;
+            final.concat(transformBasePlanetParamsByFields(shallowOceans.fields))
+            break;
+        case "mountains":
+            final.concat(transformBasePlanetParamsByFields(highMountains.fields))
+            break;
+        case "snow":
+            final.concat(transformBasePlanetParamsByFields(snowPeakMountains.fields))
+            break;
+        case "oceans":
+            final.concat(transformBasePlanetParamsByFields(shallowOceans.fields))
             break;
         default:
     }
 
-    return feilds
+    return final
 }
+
+function transformBasePlanetParamsByFields(fields){
+    for (let field in fields){
+        let low, high = field;
+        let val = getRandomBetween(low,high)
+        fields[field] = { value: parseFloat(val.toFixed(2))} 
+    }
+    return fields
+}
+
+function getRandomBetween(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
