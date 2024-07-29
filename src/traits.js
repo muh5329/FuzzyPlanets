@@ -39,7 +39,9 @@ const snowPeakMountains = {
     }],
 }
 
-const options = ["snow", "mountains","shallow","oceans"]
+const constraintOptions = ["snow", "mountains","shallow","oceans"]
+
+const Options = ["snow", "mountains","shallow","oceans"]
 
 export default function BuildPlanetFromTraits( traits){
     // Based on the traits , the traits will create limitations on certain values and ranges,
@@ -53,11 +55,13 @@ export default function BuildPlanetFromTraits( traits){
 
     let planetParams = basePlanetParams.clone();
 
-        for (let trait in traits){
-            if (trait in options){
-                getConstraintValueFromTrait(trait)
-            }  
-        }
+    for (let trait in traits){
+        if (trait in constraintOptions){
+            getConstraintValueFromTrait(trait)
+        }  
+
+
+    }
         
 }
 
