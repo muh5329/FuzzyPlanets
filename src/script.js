@@ -9,7 +9,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { BuildPlanetFromTraits } from ' ./traits.js'
+import  BuildPlanetFromTraits  from './traits.js';
+
 window.onload = () => loadScene();
 const planetParams = {
   type: { value: 2 },
@@ -179,9 +180,25 @@ export function onSubmitInput(e){
 
        // Clear the input field
        document.getElementById("in_entry").value = "";
-        
+      
+       // Apply new Transform
+       let newBasePlanetParams = BuildPlanetFromTraits(globalTraits);
+       applyTraitsToPlanetParams(newBasePlanetParams)
 
   } catch (e){
     console.log(e);
+  }
+}
+
+function applyTraitsToPlanetParams(newBasePlanetParams){
+//   for (let param of Object.vnewBasePlanetParams){
+//     let val = Object.values(param)[0].value
+//     let key = Object.keys(param)[0]
+//     planetParams[key]["value"] = val
+// }
+  for (const key in newBasePlanetParams) {
+    if (newBasePlanetParams.hasOwnProperty(key)) { 
+      planetParams[key]["value"] = newBasePlanetParams[key]["value"]
+    }
   }
 }

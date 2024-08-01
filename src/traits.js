@@ -40,8 +40,7 @@ const snowPeakMountains = {
 }
 
 const constraintOptions = ["snow", "mountains","shallow","oceans"]
-
-const Options = ["snow", "mountains","shallow","oceans"]
+const layerOptions = ["snow", "mountains","shallow","oceans"]
 
 export default function BuildPlanetFromTraits( traits){
     // Based on the traits , the traits will create limitations on certain values and ranges,
@@ -53,32 +52,43 @@ export default function BuildPlanetFromTraits( traits){
     //   params constrainted between a random low and high value going in order of traits
     //   layer by layer.
 
-    let planetParams = basePlanetParams.clone();
-
-    for (let trait in traits){
-        if (trait in constraintOptions){
-            getConstraintValueFromTrait(trait)
+    let planetParams = structuredClone(basePlanetParams);
+    let constraints = [];
+    for (let trait of traits){
+        if ( constraintOptions.indexOf(trait) != -1 ){
+            constraints = constraints.concat( getConstraintValueFromTrait(trait) ) ;
         }  
-
-
     }
-        
+   
+    planetParams = applyConstriants(constraints,planetParams)
+    return planetParams
+}
+
+function applyConstriants(constraints,planetParams){
+
+    for (let constraint of constraints){
+        let val = Object.values(constraint)[0].value
+        let key = Object.keys(constraint)[0]
+        planetParams[key]["value"] = val
+    }
+
+    return planetParams
 }
 
 function getConstraintValueFromTrait(trait){
     let final = [];
     switch (trait) {
         case "shallow":
-            final.concat(transformBasePlanetParamsByFields(shallowOceans.fields))
+            final = final.concat(transformBasePlanetParamsByFields(shallowOceans.fields))
             break;
         case "mountains":
-            final.concat(transformBasePlanetParamsByFields(highMountains.fields))
+            final = final.concat(transformBasePlanetParamsByFields(highMountains.fields))
             break;
         case "snow":
-            final.concat(transformBasePlanetParamsByFields(snowPeakMountains.fields))
+            final = final.concat(transformBasePlanetParamsByFields(snowPeakMountains.fields))
             break;
         case "oceans":
-            final.concat(transformBasePlanetParamsByFields(shallowOceans.fields))
+            final = final.concat(transformBasePlanetParamsByFields(shallowOceans.fields))
             break;
         default:
     }
@@ -87,12 +97,18 @@ function getConstraintValueFromTrait(trait){
 }
 
 function transformBasePlanetParamsByFields(fields){
-    for (let field in fields){
-        let low, high = field;
-        let val = getRandomBetween(low,high)
-        fields[field] = { value: parseFloat(val.toFixed(2))} 
+    let finalFields = []
+    for (let field of fields){
+        let lowHighs = Object.values(field)[0]
+        let low = lowHighs.low;
+        let high = lowHighs.high;
+        let val = getRandomBetween(low,high) 
+        let name = Object.keys(Object.values(fields)[0])[0];
+        let finalField = {}
+        finalField[name] = { value: parseFloat(val.toFixed(2))}
+        finalFields = finalFields.concat(finalField)
     }
-    return fields
+    return finalFields
 }
 
 function getRandomBetween(min, max) {
