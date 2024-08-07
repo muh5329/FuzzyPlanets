@@ -22,9 +22,13 @@ const shallowOceans = {
 const highMountains = {
     "type":"constraint",
     "fields" : [{
+        "sharpness":{
+            "low":1.62,
+            "high":2.42
+        },
         "amplitude":{
-        "low":0.084,
-        "high":0.228
+            "low":1.3,
+            "high":1.5
         }
     }],
 }

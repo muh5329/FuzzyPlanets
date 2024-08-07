@@ -184,7 +184,7 @@ export function onSubmitInput(e){
        // Apply new Transform
        let newBasePlanetParams = BuildPlanetFromTraits(globalTraits);
        applyTraitsToPlanetParams(newBasePlanetParams)
-
+      
   } catch (e){
     console.log(e);
   }
