@@ -191,11 +191,6 @@ export function onSubmitInput(e){
 }
 
 function applyTraitsToPlanetParams(newBasePlanetParams){
-//   for (let param of Object.vnewBasePlanetParams){
-//     let val = Object.values(param)[0].value
-//     let key = Object.keys(param)[0]
-//     planetParams[key]["value"] = val
-// }
   for (const key in newBasePlanetParams) {
     if (newBasePlanetParams.hasOwnProperty(key)) { 
       planetParams[key]["value"] = newBasePlanetParams[key]["value"]
