@@ -43,7 +43,27 @@ const snowPeakMountains = {
     }],
 }
 
-const constraintOptions = ["snow", "mountains","shallow","oceans"]
+const rockPlanet = {
+    "type":"constraint",
+    "fields" : [{
+        "amplitude":{
+        "low":1.5,
+        "high":1.5
+    },
+    "sharpness":{
+        "low":5,
+        "high":5
+    },
+    "offset":{
+        "low":2,
+        "high":2
+    }
+    }],
+}
+
+
+
+const constraintOptions = ["snow", "mountains","shallow","oceans","rock"]
 const layerOptions = ["ozone" ]
 
 export default function BuildPlanetFromTraits( traits){
@@ -93,6 +113,9 @@ function getConstraintValueFromTrait(trait){
             break;
         case "oceans":
             final = final.concat(transformBasePlanetParamsByFields(shallowOceans.fields))
+            break;
+        case "rock":
+            final = final.concat(transformBasePlanetParamsByFields(rockPlanet.fields))
             break;
         default:
     }
