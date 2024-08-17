@@ -1,6 +1,5 @@
 
 const basePlanetParams = {
-    type: { value: 2 },
     radius: { value: 20.0 },
     amplitude: { value: 1.19 },
     sharpness: { value: 2.6 },
@@ -85,6 +84,7 @@ export default function BuildPlanetFromTraits( traits){
     }
    
     planetParams = applyConstriants(constraints,planetParams)
+    console.log(planetParams)
     return planetParams
 }
 
@@ -125,12 +125,12 @@ function getConstraintValueFromTrait(trait){
 
 function transformBasePlanetParamsByFields(fields){
     let finalFields = []
-    for (let field of fields){
-        let lowHighs = Object.values(field)[0]
-        let low = lowHighs.low;
-        let high = lowHighs.high;
+    const fieldArray = Object.entries(fields[0]).map(([key, value]) => ({ key, ...value }));
+    for (let field of fieldArray){
+        let low = field.low
+        let high = field.high
         let val = getRandomBetween(low,high) 
-        let name = Object.keys(Object.values(fields)[0])[0];
+        let name = field.key;
         let finalField = {}
         finalField[name] = { value: parseFloat(val.toFixed(2))}
         finalFields = finalFields.concat(finalField)
