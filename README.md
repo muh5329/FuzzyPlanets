@@ -14,11 +14,14 @@ chosen characteristics that can be selected and deleted.  The center of the scre
 
 The goal is to complete this project within a 1-4 month period and try to get it in production ready and polished state. This is purely just for fun and practice programming and attempt to get a pollished product out in a short period.
 
+
+
 ## Tech
 
  - Vite
  - Tailwind
  - Threejs
+ - Newor
  
 
 
