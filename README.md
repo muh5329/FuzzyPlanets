@@ -16,12 +16,20 @@ The goal is to complete this project within a 1-4 month period and try to get it
 
 
 
+## Considerations
+
+### Add Fuzzy Search
+ Want to add some sort of fuzzy search functionality to the program so that the user can type what ever similar trait they wish and get the text prompt they wish.
+
+
+
+
 ## Tech
 
  - Vite
  - Tailwind
  - Threejs
- - Newor
+ 
  
 
 
