@@ -1,5 +1,6 @@
 # FuzzyPlanets
 
+![sample](/public/sample.png?raw=true "sample")
 
 Inspired by scribblenaughts , a puzzle game that allowed you to create brand new creations by typing up a series of seemingly random words to solve puzzles, that
 would lead to unexpected results. For example, Giant angry banana would create an giant angry banana that would start attacking foes!
