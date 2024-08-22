@@ -30,6 +30,7 @@ The goal is to complete this project within a 1-4 month period and try to get it
  - Vite
  - Tailwind
  - Threejs
+ - fuse (fuzzy search)
  
  
 

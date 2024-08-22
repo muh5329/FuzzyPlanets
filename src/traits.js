@@ -1,4 +1,20 @@
+import Fuse from 'fuse.js'
 
+const constraintList = [
+    { val: "snow" },
+    { val: "mountains" },
+    { val: "shallow" },
+    { val: "oceans" },
+    { val: "rock" }
+  ];
+const layerOptions = ["ozone" ]
+const options = {
+    keys: ['val'],
+    threshold: 0.5 // Adjust the threshold for fuzziness (0.0 is exact, 1.0 is very fuzzy)
+  };
+
+const fuse = new Fuse(constraintList, options);
+  
 const basePlanetParams = {
     radius: { value: 20.0 },
     amplitude: { value: 1.19 },
@@ -60,11 +76,6 @@ const rockPlanet = {
     }],
 }
 
-
-
-const constraintOptions = ["snow", "mountains","shallow","oceans","rock"]
-const layerOptions = ["ozone" ]
-
 export default function BuildPlanetFromTraits( traits){
     // Based on the traits , the traits will create limitations on certain values and ranges,
     // will add certain shaders or features,
@@ -78,9 +89,11 @@ export default function BuildPlanetFromTraits( traits){
     let planetParams = structuredClone(basePlanetParams);
     let constraints = [];
     for (let trait of traits){
-        if ( constraintOptions.indexOf(trait) != -1 ){
+        const result = fuse.search(trait); 
+        if (result.length > 0){
+            trait = result[0].item.val;
             constraints = constraints.concat( getConstraintValueFromTrait(trait) ) ;
-        }  
+        }
     }
    
     planetParams = applyConstriants(constraints,planetParams)
