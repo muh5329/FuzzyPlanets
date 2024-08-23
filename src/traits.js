@@ -5,7 +5,9 @@ const constraintList = [
     { val: "mountains" },
     { val: "shallow" },
     { val: "oceans" },
-    { val: "rock" }
+    { val: "rock" },
+    { val: "islands" },
+    { val: "continents" }
   ];
 const layerOptions = ["ozone" ]
 const options = {
@@ -76,6 +78,29 @@ const rockPlanet = {
     }],
 }
 
+const manyIslands = {
+    "type":"constraint",
+    "fields" : [{
+        "period":{
+                "low":0.22,
+                "high":0.5
+            }
+    }],
+}
+
+const bigContinents = {
+    "type":"constraint",
+    "fields" : [{
+        "period":{
+                "low":0.9,
+                "high":2.0
+            }
+    }],
+}
+
+
+
+
 export default function BuildPlanetFromTraits( traits){
     // Based on the traits , the traits will create limitations on certain values and ranges,
     // will add certain shaders or features,
@@ -129,6 +154,12 @@ function getConstraintValueFromTrait(trait){
             break;
         case "rock":
             final = final.concat(transformBasePlanetParamsByFields(rockPlanet.fields))
+            break;
+        case "islands":
+            final = final.concat(transformBasePlanetParamsByFields(manyIslands.fields))
+            break;
+        case "continents":
+            final = final.concat(transformBasePlanetParamsByFields(bigContinents.fields))
             break;
         default:
     }

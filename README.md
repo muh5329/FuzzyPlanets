@@ -38,7 +38,10 @@ The goal is to complete this project within a 1-4 month period and try to get it
 
 ## Credits
 
-Studying :
-https://github.com/dgreenheck/threejs-procedural-planets/tree/main
-https://iquilezles.org/articles/fbm/
-https://iquilezles.org/articles/morenoise/
+### Studying :
+
+Plannet Shaders for terraforming:
+    https://github.com/dgreenheck/threejs-procedural-planets/tree/main
+Basic shader study and SDF:    
+    https://iquilezles.org/articles/fbm/
+    https://iquilezles.org/articles/morenoise/
