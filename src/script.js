@@ -36,14 +36,17 @@ const planetParams = {
   color3: { value: new THREE.Color(0.620, 0.516, 0.372) },
   color4: { value: new THREE.Color(0.149, 0.254, 0.084) },
   color5: { value: new THREE.Color(0.150, 0.150, 0.150) },
+  color6: { value: new THREE.Color(0.636, 0.762, 0.902) },
   transition2: { value: 0.071 },
   transition3: { value: 0.215 },
   transition4: { value: 0.372 },
   transition5: { value: 1.2 },
+  transition6: { value: 2.16 },
   blend12: { value: 0.152 },
   blend23: { value: 0.152 },
   blend34: { value: 0.104 },
-  blend45: { value: 0.168 }
+  blend45: { value: 0.168 },
+  blend56: { value: 0.403 }
 }
 
 // List of global traits the user has typed out 

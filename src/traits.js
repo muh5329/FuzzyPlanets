@@ -10,6 +10,7 @@ const constraintList = [
     { val: "continents" }
   ];
 const layerOptions = ["ozone" ]
+
 const options = {
     keys: ['val'],
     threshold: 0.5 // Adjust the threshold for fuzziness (0.0 is exact, 1.0 is very fuzzy)
@@ -97,8 +98,6 @@ const bigContinents = {
             }
     }],
 }
-
-
 
 
 export default function BuildPlanetFromTraits( traits){

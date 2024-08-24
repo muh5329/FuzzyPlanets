@@ -15,18 +15,21 @@ uniform vec3 color2;
 uniform vec3 color3;
 uniform vec3 color4;
 uniform vec3 color5;
+uniform vec3 color6;
 
 // Transition points for each layer
 uniform float transition2;
 uniform float transition3;
 uniform float transition4;
 uniform float transition5;
+uniform float transition6;
 
 // Amount of blending between each layer
 uniform float blend12;
 uniform float blend23;
 uniform float blend34;
 uniform float blend45;
+uniform float blend56;
 
 // Bump mapping parameters
 uniform float bumpStrength;
@@ -124,10 +127,15 @@ void main() {
     color4, 
     smoothstep(transition4 - blend34, transition4 + blend34, h));
 
-    vec3 finalColor = mix(
+    vec3 color12345 = mix(
     color1234, 
     color5, 
     smoothstep(transition5 - blend45, transition5 + blend45, h));
+
+    vec3 finalColor = mix(
+    color12345, 
+    color6, 
+    smoothstep(transition6 - blend56, transition6 + blend56, h));
     
     gl_FragColor = vec4(light * finalColor * lightColor, 1.0);
 }
