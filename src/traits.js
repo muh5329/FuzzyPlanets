@@ -7,7 +7,8 @@ const constraintList = [
     { val: "oceans" },
     { val: "rock" },
     { val: "islands" },
-    { val: "continents" }
+    { val: "continents" },
+    { val: "land only" },
   ];
 const layerOptions = ["ozone" ]
 
@@ -57,6 +58,16 @@ const snowPeakMountains = {
         "amplitude":{
         "low":0.084,
         "high":0.228
+    }
+    }],
+}
+
+const landOnly = {
+    "type":"constraint",
+    "fields" : [{
+        "offset":{
+        "low":0.328,
+        "high":1.5
     }
     }],
 }
@@ -159,6 +170,9 @@ function getConstraintValueFromTrait(trait){
             break;
         case "continents":
             final = final.concat(transformBasePlanetParamsByFields(bigContinents.fields))
+            break;
+        case "land only":
+            final = final.concat(transformBasePlanetParamsByFields(landOnly.fields))
             break;
         default:
     }

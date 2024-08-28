@@ -132,6 +132,14 @@ void main() {
     color5, 
     smoothstep(transition5 - blend45, transition5 + blend45, h));
 
+    //
+    // Rock
+//    float rockMix = vUpDot;
+//    rockMix = 1.0 - step(0.8, rockMix);
+//    rockMix *= step(-0.06, vPosition.y);
+//    color = mix(color, uColorRock, rockMix); 
+
+
     vec3 finalColor = mix(
     color12345, 
     color6, 
