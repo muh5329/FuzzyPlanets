@@ -46,7 +46,8 @@ const planetParams = {
   blend23: { value: 0.152 },
   blend34: { value: 0.104 },
   blend45: { value: 0.168 },
-  blend56: { value: 0.403 }
+  blend56: { value: 0.403 },
+  atmosphere: true
 }
 
 // List of global traits the user has typed out 
