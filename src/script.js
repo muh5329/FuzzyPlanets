@@ -66,9 +66,9 @@ function loadScene() {
   const clock = new THREE.Clock(true);
   const canvas = document.querySelector('canvas.webgl')
   const renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    antialias: true
-})
+        canvas: canvas,
+        antialias: true
+    })
   renderer.setSize(window.innerWidth, window.innerHeight);
 
 
@@ -125,7 +125,7 @@ function loadScene() {
   const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), atmosphereMaterial);
   atmosphere.scale.set(22.04, 22.04, 22.04)
   scene.add(atmosphere)
-
+  
 
   function animate() {
     requestAnimationFrame(animate);

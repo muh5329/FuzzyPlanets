@@ -9,8 +9,9 @@ const constraintList = [
     { val: "islands" },
     { val: "continents" },
     { val: "land only" },
+    { val: "ozone" },
   ];
-const layerOptions = ["ozone" ]
+
 
 const options = {
     keys: ['val'],
