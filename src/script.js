@@ -53,6 +53,104 @@ const planetParams = {
 // List of global traits the user has typed out 
 let globalTraits = []
 
+class Scene {
+  constructor(){
+    //this.clock = new THREE.Clock(true);
+    const clock = new THREE.Clock(true);
+    const canvas = document.querySelector('canvas.webgl')
+    const renderer = new THREE.WebGLRenderer({
+          canvas: canvas,
+          antialias: true
+      })
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = false;
+    controls.enablePan = false;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.2;
+    camera.position.z = 50;
+
+    const composer = new EffectComposer(renderer);
+    const renderPass = new RenderPass(scene, camera);
+
+    composer.addPass(renderPass);
+
+    const bloomPass = new UnrealBloomPass();
+    bloomPass.threshold = 0;
+    bloomPass.strength = 0.2;
+    bloomPass.radius = 0.5;
+    composer.addPass(bloomPass);
+
+    const outputPass = new OutputPass();
+    composer.addPass(outputPass);
+
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: planetParams,
+      vertexShader: planetVertexShader,
+      fragmentShader: planetFragmentShader,
+    });
+
+    // Atmosphere
+    const atmosphereMaterial = new THREE.ShaderMaterial({
+      side: THREE.BackSide,
+      transparent: true,
+      vertexShader: atmosphereVertexShader,
+      fragmentShader: atmosphereFragmentShader,
+      uniforms:
+      {
+          uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
+          uAtmosphereDayColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereDayColor)),
+          uAtmosphereTwilightColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereTwilightColor))
+      }
+    })
+
+
+    const planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), material);
+    planet.geometry.computeTangents();
+    scene.add(planet);
+
+    const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), atmosphereMaterial);
+    atmosphere.scale.set(22.04, 22.04, 22.04)
+    scene.add(atmosphere)
+    
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      composer.render();
+    }
+
+    // Events
+    window.addEventListener('resize', () => {
+      // Resize camera aspect ratio and renderer size to the new window size
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+    document.getElementById ("submitEntry").addEventListener ("click", onSubmitInput, false);
+    var input = document.getElementById('in_entry');
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Prevent default form submission
+            onSubmitInput(); 
+        }
+    });
+
+
+    createUI(planetParams, bloomPass);
+    animate();
+
+    console.log('done');
+  }
+
+}
+
 /**
  * Earth
  */
@@ -63,97 +161,7 @@ earthParameters.atmosphereTwilightColor = '#ff6600'
 
 function loadScene() {
   console.log('loading scene');
-  const clock = new THREE.Clock(true);
-  const canvas = document.querySelector('canvas.webgl')
-  const renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
-        antialias: true
-    })
-  renderer.setSize(window.innerWidth, window.innerHeight);
-
-
-  const scene = new THREE.Scene();
-
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableZoom = false;
-  controls.enablePan = false;
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = 0.2;
-  camera.position.z = 50;
-
-  const composer = new EffectComposer(renderer);
-  const renderPass = new RenderPass(scene, camera);
-
-  composer.addPass(renderPass);
-
-  const bloomPass = new UnrealBloomPass();
-  bloomPass.threshold = 0;
-  bloomPass.strength = 0.2;
-  bloomPass.radius = 0.5;
-  composer.addPass(bloomPass);
-
-  const outputPass = new OutputPass();
-  composer.addPass(outputPass);
-
-
-  const material = new THREE.ShaderMaterial({
-    uniforms: planetParams,
-    vertexShader: planetVertexShader,
-    fragmentShader: planetFragmentShader,
-  });
-
-  // Atmosphere
-  const atmosphereMaterial = new THREE.ShaderMaterial({
-    side: THREE.BackSide,
-    transparent: true,
-    vertexShader: atmosphereVertexShader,
-    fragmentShader: atmosphereFragmentShader,
-    uniforms:
-    {
-        uSunDirection: new THREE.Uniform(new THREE.Vector3(0, 0, 1)),
-        uAtmosphereDayColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereDayColor)),
-        uAtmosphereTwilightColor: new THREE.Uniform(new THREE.Color(earthParameters.atmosphereTwilightColor))
-    }
-  })
-
-
-  const planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), material);
-  planet.geometry.computeTangents();
-  scene.add(planet);
-
-  const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), atmosphereMaterial);
-  atmosphere.scale.set(22.04, 22.04, 22.04)
-  scene.add(atmosphere)
-  
-
-  function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    composer.render();
-  }
-
-  // Events
-  window.addEventListener('resize', () => {
-    // Resize camera aspect ratio and renderer size to the new window size
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-  document.getElementById ("submitEntry").addEventListener ("click", onSubmitInput, false);
-  var input = document.getElementById('in_entry');
-  input.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-          e.preventDefault(); // Prevent default form submission
-          onSubmitInput(); 
-      }
-  });
-
-
-  createUI(planetParams, bloomPass);
-  animate();
-
-  console.log('done');
+  const scene = new Scene();
 }
 
 
