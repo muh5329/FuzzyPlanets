@@ -59,7 +59,7 @@ class Scene {
     this.canvas = document.querySelector('canvas.webgl')
     
     const renderer = new THREE.WebGLRenderer({
-          canvas: canvas,
+          canvas: this.canvas,
           antialias: true
       })
     renderer.setSize(window.innerWidth, window.innerHeight);
