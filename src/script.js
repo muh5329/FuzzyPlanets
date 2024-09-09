@@ -55,9 +55,9 @@ let globalTraits = []
 
 class Scene {
   constructor(){
-    //this.clock = new THREE.Clock(true);
-    const clock = new THREE.Clock(true);
-    const canvas = document.querySelector('canvas.webgl')
+    this.clock = new THREE.Clock(true);
+    this.canvas = document.querySelector('canvas.webgl')
+    
     const renderer = new THREE.WebGLRenderer({
           canvas: canvas,
           antialias: true
