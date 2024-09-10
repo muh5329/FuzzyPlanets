@@ -12,6 +12,15 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import  BuildPlanetFromTraits  from './traits.js';
 
 window.onload = () => loadScene();
+
+/**
+ * Earth
+ */
+const earthParameters = {}
+earthParameters.atmosphereDayColor = '#00aaff'
+earthParameters.atmosphereTwilightColor = '#ff6600'
+
+
 const planetParams = {
   type: { value: 2 },
   radius: { value: 20.0 },
@@ -58,46 +67,43 @@ class Scene {
     this.clock = new THREE.Clock(true);
     this.canvas = document.querySelector('canvas.webgl')
     
-    const renderer = new THREE.WebGLRenderer({
+    this.renderer = new THREE.WebGLRenderer({
           canvas: this.canvas,
           antialias: true
       })
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableZoom = false;
+    this.controls.enablePan = false;
+    this.controls.autoRotate = true;
+    this.controls.autoRotateSpeed = 0.2;
+    this.camera.position.z = 50;
+
+    this.composer = new EffectComposer(this.renderer);
+    this.renderPass = new RenderPass(this.scene, this.camera);
+
+    this.composer.addPass(this.renderPass);
+
+    this.bloomPass = new UnrealBloomPass();
+    this.bloomPass.threshold = 0;
+    this.bloomPass.strength = 0.2;
+    this.bloomPass.radius = 0.5;
+    this.composer.addPass(this.bloomPass);
+
+    this.outputPass = new OutputPass();
+    this.composer.addPass(this.outputPass);
 
 
-    const scene = new THREE.Scene();
-
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableZoom = false;
-    controls.enablePan = false;
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.2;
-    camera.position.z = 50;
-
-    const composer = new EffectComposer(renderer);
-    const renderPass = new RenderPass(scene, camera);
-
-    composer.addPass(renderPass);
-
-    const bloomPass = new UnrealBloomPass();
-    bloomPass.threshold = 0;
-    bloomPass.strength = 0.2;
-    bloomPass.radius = 0.5;
-    composer.addPass(bloomPass);
-
-    const outputPass = new OutputPass();
-    composer.addPass(outputPass);
-
-
-    const material = new THREE.ShaderMaterial({
+    this.material = new THREE.ShaderMaterial({
       uniforms: planetParams,
       vertexShader: planetVertexShader,
       fragmentShader: planetFragmentShader,
     });
 
     // Atmosphere
-    const atmosphereMaterial = new THREE.ShaderMaterial({
+    this.atmosphereMaterial = new THREE.ShaderMaterial({
       side: THREE.BackSide,
       transparent: true,
       vertexShader: atmosphereVertexShader,
@@ -111,28 +117,22 @@ class Scene {
     })
 
 
-    const planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), material);
-    planet.geometry.computeTangents();
-    scene.add(planet);
+    this.planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), this.material);
+    this.planet.geometry.computeTangents();
+    this.scene.add(this.planet);
 
-    const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), atmosphereMaterial);
-    atmosphere.scale.set(22.04, 22.04, 22.04)
-    scene.add(atmosphere)
+    this.atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), this.atmosphereMaterial);
+    this.atmosphere.scale.set(22.04, 22.04, 22.04)
+    this.scene.add(this.atmosphere)
     
-
-    function animate() {
-      requestAnimationFrame(animate);
-      controls.update();
-      composer.render();
-    }
-
     // Events
     window.addEventListener('resize', () => {
       // Resize camera aspect ratio and renderer size to the new window size
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
     document.getElementById ("submitEntry").addEventListener ("click", onSubmitInput, false);
     var input = document.getElementById('in_entry');
     input.addEventListener('keypress', function(e) {
@@ -142,21 +142,21 @@ class Scene {
         }
     });
 
-
-    createUI(planetParams, bloomPass);
-    animate();
+    createUI(planetParams, this.bloomPass);
+    this.animate();
 
     console.log('done');
   }
 
+  animate() {
+    requestAnimationFrame(this.animate);
+    this.controls.update();
+    this.composer.render();
+  }
+
 }
 
-/**
- * Earth
- */
-const earthParameters = {}
-earthParameters.atmosphereDayColor = '#00aaff'
-earthParameters.atmosphereTwilightColor = '#ff6600'
+
 
 
 function loadScene() {
