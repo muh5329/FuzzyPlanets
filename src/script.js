@@ -11,15 +11,12 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import  BuildPlanetFromTraits  from './traits.js';
 
-window.onload = () => loadScene();
-
 /**
  * Earth
  */
 const earthParameters = {}
 earthParameters.atmosphereDayColor = '#00aaff'
 earthParameters.atmosphereTwilightColor = '#ff6600'
-
 
 const planetParams = {
   type: { value: 2 },
@@ -58,7 +55,6 @@ const planetParams = {
   blend56: { value: 0.403 },
   atmosphere: true
 }
-
 // List of global traits the user has typed out 
 let globalTraits = []
 
@@ -143,27 +139,20 @@ class Scene {
     });
 
     createUI(planetParams, this.bloomPass);
-    this.animate();
-
     console.log('done');
   }
 
+  /**
+   * Special case function  , does not have access to 'this' qualifier 
+   *  after returning from requestAnimaionFrame
+   */
   animate() {
-    requestAnimationFrame(this.animate);
-    this.controls.update();
-    this.composer.render();
+    requestAnimationFrame(scene.animate);
+    scene.controls.update();
+    scene.composer.render();
   }
 
 }
-
-
-
-
-function loadScene() {
-  console.log('loading scene');
-  const scene = new Scene();
-}
-
 
 export function onSubmitInput(e){
   try{
@@ -209,3 +198,6 @@ function applyTraitsToPlanetParams(newBasePlanetParams){
     }
   }
 }
+
+let scene = new Scene();
+scene.animate();
