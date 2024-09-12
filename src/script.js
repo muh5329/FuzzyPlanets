@@ -152,6 +152,14 @@ class Scene {
     scene.composer.render();
   }
 
+  remove_atmosphere(){
+    this.scene.remove(this.atmosphere)
+  }
+
+  add_atmosphere(){
+    this.scene.remove(this.atmosphere)
+  }
+
 }
 
 export function onSubmitInput(e){
