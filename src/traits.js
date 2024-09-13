@@ -27,6 +27,7 @@ const basePlanetParams = {
     offset: { value: -0.016 },
     period: { value: 0.6 },
     persistence: { value: 0.484 },
+    atmosphere: true
   }
 
 const shallowOceans = {
@@ -111,6 +112,12 @@ const bigContinents = {
     }],
 }
 
+const ozoneLayer= {
+    "type":"trait",
+    "fields" : [{
+        "atmosphere":true
+    }],
+}
 
 export default function BuildPlanetFromTraits( traits){
     // Based on the traits , the traits will create limitations on certain values and ranges,
@@ -133,7 +140,6 @@ export default function BuildPlanetFromTraits( traits){
     }
    
     planetParams = applyConstriants(constraints,planetParams)
-    console.log(planetParams)
     return planetParams
 }
 
@@ -152,28 +158,31 @@ function getConstraintValueFromTrait(trait){
     let final = [];
     switch (trait) {
         case "shallow":
-            final = final.concat(transformBasePlanetParamsByFields(shallowOceans.fields))
+            final = final.concat(transformBasePlanetParamsConstraintByFields(shallowOceans.fields))
             break;
         case "mountains":
-            final = final.concat(transformBasePlanetParamsByFields(highMountains.fields))
+            final = final.concat(transformBasePlanetParamsConstraintByFields(highMountains.fields))
             break;
         case "snow":
-            final = final.concat(transformBasePlanetParamsByFields(snowPeakMountains.fields))
+            final = final.concat(transformBasePlanetParamsConstraintByFields(snowPeakMountains.fields))
             break;
         case "oceans":
-            final = final.concat(transformBasePlanetParamsByFields(shallowOceans.fields))
+            final = final.concat(transformBasePlanetParamsConstraintByFields(shallowOceans.fields))
             break;
         case "rock":
-            final = final.concat(transformBasePlanetParamsByFields(rockPlanet.fields))
+            final = final.concat(transformBasePlanetParamsConstraintByFields(rockPlanet.fields))
             break;
         case "islands":
-            final = final.concat(transformBasePlanetParamsByFields(manyIslands.fields))
+            final = final.concat(transformBasePlanetParamsConstraintByFields(manyIslands.fields))
             break;
         case "continents":
-            final = final.concat(transformBasePlanetParamsByFields(bigContinents.fields))
+            final = final.concat(transformBasePlanetParamsConstraintByFields(bigContinents.fields))
             break;
         case "land only":
-            final = final.concat(transformBasePlanetParamsByFields(landOnly.fields))
+            final = final.concat(transformBasePlanetParamsConstraintByFields(landOnly.fields))
+            break;
+        case "ozone":
+            final = final.concat(transformBasePlanetParamsTraitsByFields(ozoneLayer.fields))
             break;
         default:
     }
@@ -181,7 +190,7 @@ function getConstraintValueFromTrait(trait){
     return final
 }
 
-function transformBasePlanetParamsByFields(fields){
+function transformBasePlanetParamsConstraintByFields(fields){
     let finalFields = []
     const fieldArray = Object.entries(fields[0]).map(([key, value]) => ({ key, ...value }));
     for (let field of fieldArray){
@@ -194,6 +203,28 @@ function transformBasePlanetParamsByFields(fields){
         finalFields = finalFields.concat(finalField)
     }
     return finalFields
+}
+
+function transformBasePlanetParamsTraitsByFields(fields){
+    let finalFields = []
+    const fieldArray = Object.entries(fields[0]).map(([key, value]) => ({ key, ...value }));
+    for (let field of fieldArray){
+        let trait = field.low
+        let val = getRandomBetween(low,high) 
+        let name = field.key;
+        let finalField = {}
+        finalField[name] = { value: parseFloat(val.toFixed(2))}
+        finalFields = finalFields.concat(finalField)
+    }
+    // "fields" : [{
+    //     "atmosphere":true
+    // }],
+    // for (const key in fields) {
+    //     if (newBasePlanetParams.hasOwnProperty(key)) { 
+    //       planetParams[key]["value"] = newBasePlanetParams[key]["value"]
+    //     } 
+    // }
+    // return finalFields
 }
 
 function getRandomBetween(min, max) {

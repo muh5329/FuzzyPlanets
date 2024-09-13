@@ -193,6 +193,7 @@ export function onSubmitInput(e){
        // Apply new Transform
        let newBasePlanetParams = BuildPlanetFromTraits(globalTraits);
        applyTraitsToPlanetParams(newBasePlanetParams)
+       updateLayers()
       
   } catch (e){
     console.log(e);
@@ -203,7 +204,15 @@ function applyTraitsToPlanetParams(newBasePlanetParams){
   for (const key in newBasePlanetParams) {
     if (newBasePlanetParams.hasOwnProperty(key)) { 
       planetParams[key]["value"] = newBasePlanetParams[key]["value"]
-    }
+    } 
+  }
+}
+
+function updateLayers(){ 
+  if (planetParams.atmosphere == true){
+    scene.add_atmosphere()
+  } else if (planetParams.atmosphere == false) {
+    scene.remove_atmosphere()
   }
 }
 
