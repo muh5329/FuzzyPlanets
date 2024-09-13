@@ -27,7 +27,7 @@ const basePlanetParams = {
     offset: { value: -0.016 },
     period: { value: 0.6 },
     persistence: { value: 0.484 },
-    atmosphere: true
+    atmosphere: false
   }
 
 const shallowOceans = {
@@ -146,9 +146,13 @@ export default function BuildPlanetFromTraits( traits){
 function applyConstriants(constraints,planetParams){
 
     for (let constraint of constraints){
-        let val = Object.values(constraint)[0].value
-        let key = Object.keys(constraint)[0]
-        planetParams[key]["value"] = val
+        if (Object.values(constraint)[0].hasOwnProperty("value")){
+            let val = Object.values(constraint)[0].value
+            let key = Object.keys(constraint)[0]
+            planetParams[key]["value"] = val
+        } else {
+            planetParams[Object.keys(constraint)[0]] = Object.values(constraint)[0]
+        }
     }
 
     return planetParams
@@ -207,24 +211,14 @@ function transformBasePlanetParamsConstraintByFields(fields){
 
 function transformBasePlanetParamsTraitsByFields(fields){
     let finalFields = []
-    const fieldArray = Object.entries(fields[0]).map(([key, value]) => ({ key, ...value }));
-    for (let field of fieldArray){
-        let trait = field.low
-        let val = getRandomBetween(low,high) 
-        let name = field.key;
-        let finalField = {}
-        finalField[name] = { value: parseFloat(val.toFixed(2))}
-        finalFields = finalFields.concat(finalField)
-    }
-    // "fields" : [{
-    //     "atmosphere":true
-    // }],
-    // for (const key in fields) {
-    //     if (newBasePlanetParams.hasOwnProperty(key)) { 
-    //       planetParams[key]["value"] = newBasePlanetParams[key]["value"]
-    //     } 
-    // }
-    // return finalFields
+    for (const key in fields[0]) {
+        if (fields[0].hasOwnProperty(key)) { 
+            let finalField = {}
+            finalField[key] = fields[0][key]; 
+            finalFields.push(finalField);
+        } 
+      }
+    return finalFields
 }
 
 function getRandomBetween(min, max) {

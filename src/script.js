@@ -53,7 +53,7 @@ const planetParams = {
   blend34: { value: 0.104 },
   blend45: { value: 0.168 },
   blend56: { value: 0.403 },
-  atmosphere: true
+  atmosphere: false
 }
 // List of global traits the user has typed out 
 let globalTraits = []
@@ -119,7 +119,7 @@ class Scene {
 
     this.atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), this.atmosphereMaterial);
     this.atmosphere.scale.set(22.04, 22.04, 22.04)
-    this.scene.add(this.atmosphere)
+    
     
     // Events
     window.addEventListener('resize', () => {
@@ -157,7 +157,7 @@ class Scene {
   }
 
   add_atmosphere(){
-    this.scene.remove(this.atmosphere)
+    this.scene.add(this.atmosphere)
   }
 
 }
@@ -202,13 +202,16 @@ export function onSubmitInput(e){
 
 function applyTraitsToPlanetParams(newBasePlanetParams){
   for (const key in newBasePlanetParams) {
-    if (newBasePlanetParams.hasOwnProperty(key)) { 
+    if (newBasePlanetParams.hasOwnProperty(key) && planetParams[key].hasOwnProperty("value")) { 
       planetParams[key]["value"] = newBasePlanetParams[key]["value"]
-    } 
+    }  else {
+      planetParams[key] = newBasePlanetParams[key]
+    }
   }
 }
 
 function updateLayers(){ 
+  console.log("oi")
   if (planetParams.atmosphere == true){
     scene.add_atmosphere()
   } else if (planetParams.atmosphere == false) {
