@@ -10,6 +10,8 @@ void main()
     vec3 normal = normalize(vNormal);
     vec3 color = vec3(0.0);
 
+    
+
     // Final color
     gl_FragColor = vec4(color, alpha);
     #include <tonemapping_fragment>

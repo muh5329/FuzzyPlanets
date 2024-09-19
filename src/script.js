@@ -5,6 +5,8 @@ import planetVertexShader from './shaders/planet/vertex.glsl'
 import planetFragmentShader from './shaders/planet/fragment.glsl'
 import atmosphereVertexShader from './shaders/atmosphere/vertex.glsl'
 import atmosphereFragmentShader from './shaders/atmosphere/fragment.glsl'
+import fieryVertexShader from './shaders/fiery/vertex.glsl'
+import fieryFragmentShader from './shaders/fiery/fragment.glsl'
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -211,7 +213,6 @@ function applyTraitsToPlanetParams(newBasePlanetParams){
 }
 
 function updateLayers(){ 
-  console.log("oi")
   if (planetParams.atmosphere == true){
     scene.add_atmosphere()
   } else if (planetParams.atmosphere == false) {
