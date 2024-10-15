@@ -13,6 +13,29 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import  BuildPlanetFromTraits  from './traits.js';
 
+
+
+// var tuniform = {
+//   iGlobalTime:    { type: 'f', value: 0.1 },
+//   iChannel0:  { type: 't', value: THREE.ImageUtils.loadTexture( 'textures/tex07.jpg') },
+//   iChannel1:  { type: 't', value: THREE.ImageUtils.loadTexture( 'textures/infi.jpg' ) },
+// };
+
+// tuniform.iChannel0.value.wrapS = tuniform.iChannel0.value.wrapT = THREE.RepeatWrapping;
+// tuniform.iChannel1.value.wrapS = tuniform.iChannel1.value.wrapT = THREE.RepeatWrapping;
+
+
+// var mat = new THREE.ShaderMaterial( {
+//   uniforms: tuniform,
+//   vertexShader: vshader,
+//   fragmentShader: fshader,            
+//   side:THREE.DoubleSide
+// } );
+
+// var tobject = new THREE.Mesh( new THREE.PlaneGeometry(700, 394,1,1), mat);
+
+// tuniform.iGlobalTime.value += clock.getDelta();
+
 /**
  * Earth
  */
