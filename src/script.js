@@ -7,6 +7,8 @@ import atmosphereVertexShader from './shaders/atmosphere/vertex.glsl'
 import atmosphereFragmentShader from './shaders/atmosphere/fragment.glsl'
 import fieryVertexShader from './shaders/fiery/vertex.glsl'
 import fieryFragmentShader from './shaders/fiery/fragment.glsl'
+import generalPurposeVertex from './shaders/fiery/generalPurposeVertex.glsl'
+import simpleTunnelFragement from './shaders/fiery/simpleTunnelFragement.glsl'
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
@@ -15,26 +17,26 @@ import  BuildPlanetFromTraits  from './traits.js';
 
 
 
-// var tuniform = {
-//   iGlobalTime:    { type: 'f', value: 0.1 },
-//   iChannel0:  { type: 't', value: THREE.ImageUtils.loadTexture( 'textures/tex07.jpg') },
-//   iChannel1:  { type: 't', value: THREE.ImageUtils.loadTexture( 'textures/infi.jpg' ) },
-// };
+var tuniform = {
+  iGlobalTime:    { type: 'f', value: 0.1 },
+  iChannel0:  { type: 't', value: THREE.ImageUtils.loadTexture( 'textures/tex1.jpg') },
+  iChannel1:  { type: 't', value: THREE.ImageUtils.loadTexture( 'textures/inf.jpg' ) },
+};
 
-// tuniform.iChannel0.value.wrapS = tuniform.iChannel0.value.wrapT = THREE.RepeatWrapping;
-// tuniform.iChannel1.value.wrapS = tuniform.iChannel1.value.wrapT = THREE.RepeatWrapping;
+tuniform.iChannel0.value.wrapS = tuniform.iChannel0.value.wrapT = THREE.RepeatWrapping;
+tuniform.iChannel1.value.wrapS = tuniform.iChannel1.value.wrapT = THREE.RepeatWrapping;
 
 
-// var mat = new THREE.ShaderMaterial( {
-//   uniforms: tuniform,
-//   vertexShader: vshader,
-//   fragmentShader: fshader,            
-//   side:THREE.DoubleSide
-// } );
+var mat = new THREE.ShaderMaterial( {
+  uniforms: generalPurposeVertex,
+  vertexShader: generalPurposeVertex,
+  fragmentShader: simpleTunnelFragement,            
+  side:THREE.DoubleSide
+} );
 
-// var tobject = new THREE.Mesh( new THREE.PlaneGeometry(700, 394,1,1), mat);
+var tobject = new THREE.Mesh( new THREE.PlaneGeometry(700, 394,1,1), mat);
 
-// tuniform.iGlobalTime.value += clock.getDelta();
+tuniform.iGlobalTime.value += clock.getDelta();
 
 /**
  * Earth
