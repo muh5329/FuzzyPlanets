@@ -35,7 +35,7 @@ var mat = new THREE.ShaderMaterial( {
 } );
 
 var tobject = new THREE.Mesh( new THREE.PlaneGeometry(700, 394,1,1), mat);
-
+this.scene.add(this.tobject);
 tuniform.iGlobalTime.value += clock.getDelta();
 
 /**
